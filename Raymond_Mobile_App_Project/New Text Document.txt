@@ -1,0 +1,23 @@
+//Read
+#define N_TECH_OP_CODE_READ_BAT_PROFILE         (0x102E)
+#define N_TECH_OP_CODE_READ_RESPONSE (0x202E)
+
+
+
+
+
+//Write
+g_output_cmd.payload_len = 9;
+g_output_cmd.payload_data[0] = Cell_Temp & 0xFF;
+g_output_cmd.payload_data[1] = Cell_Temp >> 8;
+g_output_cmd.payload_data[2] = Sys_Info.soc & 0xFF;
+g_output_cmd.payload_data[3] = Sys_Info.soc >> 8;
+g_output_cmd.payload_data[4] = Pack_Current & 0xFF;
+g_output_cmd.payload_data[5] = Pack_Current >> 8;
+g_output_cmd.payload_data[6] = Pack_Vol & 0xFF;
+g_output_cmd.payload_data[7] = Pack_Vol >> 8;
+g_output_cmd.payload_data[8] = Sys_Info.Pack_Status.status & 0xFF;
+
+
+
+

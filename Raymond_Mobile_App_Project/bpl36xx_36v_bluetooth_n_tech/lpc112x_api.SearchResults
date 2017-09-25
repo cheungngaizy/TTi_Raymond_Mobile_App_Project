@@ -1,0 +1,8 @@
+---- Sys_Info.soc Matches (8 in 1 files) ----
+Main.c:												//Sys_Info.soc = 1000;									// testing Nicholas
+Main.c:												g_output_cmd.payload_data[2] = Sys_Info.soc & 0xFF;
+Main.c:												g_output_cmd.payload_data[3] = Sys_Info.soc >> 8;
+Main.c:		Sys_Info.soc = get_soc(max_cell_volt);
+Main.c:		Sys_Info.soc = get_soc(min_cell_volt);
+Main.c:	Sys_Info.soc = i * 5 * 10;
+Main.c:	printf("Sys_Info.soc =  %d \n", (Sys_Info.soc / 10));
