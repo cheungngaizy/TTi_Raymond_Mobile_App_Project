@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Handler handler_draw;
     Handler handler_battery_update;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -251,6 +252,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             case id.button_Result: {
+                if(Global_Variable.FLAG_first_start_time == true) {
+                    Global_Variable.cutting_time = System.currentTimeMillis() - Global_Variable.starting_time;
+                }
+               // else Global_Variable.cutting_time = 0;
                 startActivity(mIntentResult);
                 break;
             }
@@ -453,7 +458,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Battery_IMAGE.setImageResource(drawable.battery_01);
             }
 
-            handler_battery_update.postDelayed(this,1000);
+            handler_battery_update.postDelayed(this,2000);
         }
     };
 
@@ -564,7 +569,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //bluetooth automatic sending command for getting battery status
             bt.driver_send_all();
-            handler.postDelayed(this, 70);
+            handler.postDelayed(this, 150);
         }
     };
 
@@ -674,7 +679,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 mDebugText.setText("Max Current:"+Global_Variable.Target_Ampere/1000+"A");
-                handler_draw.postDelayed(this,50);
+                handler_draw.postDelayed(this,200);
 
             }
 
@@ -695,7 +700,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Global_Variable.Target_Ampere = i * 5000;
                 break;
             }
-
         }
     }
 

@@ -2,9 +2,24 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#501e2f</color>
 
     //custom color
     <color name="color_Gauge_indicator">#04bd04</color>
     <color name="color_Adjust_RPM">#bd4204</color>
+    <color name="color_bar_background">#404040</color>
+
+    <color name="color_0_5">#39c039</color>
+    <color name="color_5_10">#4bc039</color>
+    <color name="color_10_15">#66c039</color>
+    <color name="color_15_20">#78c039</color>
+    <color name="color_20_25">#8fc039</color>
+    <color name="color_25_30">#a5c039</color>
+    <color name="color_30_35">#bcc039</color>
+    <color name="color_35_40">#c0aa39</color>
+    <color name="color_40_45">#c09539</color>
+    <color name="color_45_50">#c07f39</color>
+    <color name="color_50_55">#c06839</color>
+    <color name="color_55_60">#c04939</color>
+
 </resources>

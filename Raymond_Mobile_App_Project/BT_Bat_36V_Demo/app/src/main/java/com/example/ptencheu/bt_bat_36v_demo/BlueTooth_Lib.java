@@ -130,6 +130,11 @@ public class BlueTooth_Lib {
                 case 2:{mConnectedThread.driver_send_command(2);break;}
             }
 
+            if(Global_Variable.FLAG_first_start_time == false){
+                Global_Variable.FLAG_first_start_time = true;
+                Global_Variable.starting_time = System.currentTimeMillis();
+            }
+
         }
     }
 
@@ -463,7 +468,7 @@ public class BlueTooth_Lib {
         }
 
         byte []pending_data = new byte[50000];
-        public byte []pending_msg = new byte [30];
+        public byte []pending_msg = new byte [3000];
         int pending_data_count = 0;
 
         private void analyst_data(byte []input, int length){
@@ -632,6 +637,10 @@ public class BlueTooth_Lib {
 
         }
 
+
+        long last_record_current_time = 0;
+        boolean record_first_time = false;
+
         public void check_what_is_it_for_driver(byte[] pending_Msg){
 
 
@@ -640,7 +649,56 @@ public class BlueTooth_Lib {
                 case 0x03:{//current
                     Global_Variable.Current = (((pending_Msg[3]&0xff) | ((pending_Msg[2]&0xff)<<8))&0xffff)/1000;
 
-                        //control logic by Current Value
+                    if(record_first_time == false){last_record_current_time = System.currentTimeMillis();record_first_time = true;}
+                    else if(Global_Variable.Current > 0 && (System.currentTimeMillis()-last_record_current_time)>0 && Global_Variable.Voltage > 0){
+                        float Joule = Global_Variable.Current * Global_Variable.Voltage *  (((float)(System.currentTimeMillis()-last_record_current_time))/1000);
+
+                        Global_Variable.Ampere_Hour = Global_Variable.Ampere_Hour + Joule/(3600*Global_Variable.Voltage);
+
+                        last_record_current_time = System.currentTimeMillis();
+                    }
+
+                        //further data analyst
+                    if(Global_Variable.Current>=0 && Global_Variable.Current < 5){
+                        Global_Variable.counter_0_5++;
+                    }
+                    else if(Global_Variable.Current>=5 && Global_Variable.Current < 10){
+                        Global_Variable.counter_5_10++;
+                    }
+                    else if(Global_Variable.Current>=10 && Global_Variable.Current < 15){
+                        Global_Variable.counter_10_15++;
+                    }
+                    else if(Global_Variable.Current>=15 && Global_Variable.Current < 20){
+                        Global_Variable.counter_15_20++;
+                    }
+                    else if(Global_Variable.Current>=20 && Global_Variable.Current < 25){
+                        Global_Variable.counter_20_25++;
+                    }
+                    else if(Global_Variable.Current>=25 && Global_Variable.Current < 30){
+                        Global_Variable.counter_25_30++;
+                    }
+                    else if(Global_Variable.Current>=30 && Global_Variable.Current < 35){
+                        Global_Variable.counter_30_35++;
+                    }
+                    else if(Global_Variable.Current>=35 && Global_Variable.Current < 40){
+                        Global_Variable.counter_35_40++;
+                    }
+                    else if(Global_Variable.Current>=40 && Global_Variable.Current < 45){
+                        Global_Variable.counter_40_45++;
+                    }
+                    else if(Global_Variable.Current>=45 && Global_Variable.Current < 50){
+                        Global_Variable.counter_45_50++;
+                    }
+                    else if(Global_Variable.Current>=50 && Global_Variable.Current < 55){
+                        Global_Variable.counter_50_55++;
+                    }
+                    else if(Global_Variable.Current>=55 && Global_Variable.Current <= 60){
+                        Global_Variable.counter_55_60++;
+                    }
+                    else{}
+
+
+                    //control logic by Current Value
                         //Data Analyst
                         if(Global_Variable.Current >= 0 && Global_Variable.Current < 10){
                             Global_Variable.set0_10_counter++;
