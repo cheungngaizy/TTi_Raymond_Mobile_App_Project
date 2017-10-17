@@ -1,5 +1,6 @@
 package com.example.ptencheu.bt_bat_36v_demo;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.graphics.Typeface;
 import android.media.Image;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Handler handler;
     Handler handler_draw;
     Handler handler_battery_update;
-
+    Raw_Data_Write txt_write;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        txt_write = new Raw_Data_Write();
     }
 
     Button mButton_PRO;
@@ -76,6 +82,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mButton_1500;
     Button mButton_2500;
     Button mButton_3500;
+
+    Button mButton_Mode_Power;
+    Button mButton_Mode_Eco;
+
 
     Button mButton_Real_Pro;
 
@@ -127,7 +137,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mButton_Real_Pro = (Button) findViewById(id.button_Real_PRO);
         mButton_Real_Pro.setOnClickListener(this);
 
-
+        mButton_Mode_Power = (Button) findViewById(id.button_power);
+        mButton_Mode_Power.setOnClickListener(this);
+        mButton_Mode_Power.setVisibility(View.INVISIBLE);
+        mButton_Mode_Eco = (Button) findViewById(id.button_eco);
+        mButton_Mode_Eco.setOnClickListener(this);
+        mButton_Mode_Eco.setVisibility(View.INVISIBLE);
 
         mButton_0 = (Button)findViewById(id.button_0_10);
         mButton_0.setOnClickListener(this);
@@ -241,13 +256,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mButton_PRO.setBackgroundResource(drawable.run_);
                     FLAG_run_set = true;
                     Toast.makeText(this, "select a Speed", Toast.LENGTH_SHORT).show();
+                    mButton_Mode_Eco.setVisibility(View.VISIBLE);
+                    mButton_Mode_Power.setVisibility(View.VISIBLE);
                 } else if (FLAG_run_set == true) {
                     mButton_PRO.setBackgroundResource(drawable.set);
                     //RPM_selection_button_Trans(FLAG_RPM_Change_which);
                     FLAG_run_set = false;
                     FLAG_RPM_Change_which = 10;
+                    mButton_Mode_Power.setVisibility(View.INVISIBLE);
+                    mButton_Mode_Eco.setVisibility(View.INVISIBLE);
                 }
 
+                break;
+            }
+
+            case id.button_eco:{
+                Global_Variable.Adjust_RPM = 2500;
+                Global_Variable.target_speed_0_10 = 2500;
+                Global_Variable.Adjust_RPM = 2800;
+                Global_Variable.target_speed_11_20 = 2800;
+                Global_Variable.target_speed_21_30 = 2800;
+                Global_Variable.target_speed_31_40 = 2800;
+                Global_Variable.target_speed_41_50 = 2800;
+                Global_Variable.target_speed_51_60 = 2800;
+                Toast.makeText(this,"Set to Eco Mode",Toast.LENGTH_SHORT).show();
+
+                break;
+            }
+
+            case id.button_power:{
+
+                Global_Variable.Adjust_RPM = 3200;
+                Global_Variable.target_speed_0_10 = 3200;
+                Global_Variable.target_speed_11_20 = 3200;
+                Global_Variable.target_speed_21_30 = 3200;
+                Global_Variable.target_speed_31_40 = 3200;
+                Global_Variable.target_speed_41_50 = 3200;
+                Global_Variable.target_speed_51_60 = 3200;
+                Toast.makeText(this,"Set to Power Mode",Toast.LENGTH_SHORT).show();
                 break;
             }
 
@@ -255,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(Global_Variable.FLAG_first_start_time == true) {
                     Global_Variable.cutting_time = System.currentTimeMillis() - Global_Variable.starting_time;
                 }
-               // else Global_Variable.cutting_time = 0;
+                else Global_Variable.cutting_time = 0;
                 startActivity(mIntentResult);
                 break;
             }
@@ -382,68 +428,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void drawLine_for_Gauge(int X_origin, int Y_origin, double length,double percentage, double percentage_Adjust){
 
-        canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        try {
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
-        if(FLAG_run_set == false) {
+            if (FLAG_run_set == false) {
 
-            double theta = 0;
-            double starting_theta = 270;
-            double ending_theta = 90;
+                double theta = 0;
+                double starting_theta = 270;
+                double ending_theta = 90;
 
-            if (percentage <= 50) {
-                theta = 270 + (90 - (starting_theta - 270)) * percentage / 50;
-            } else if (percentage > 50) {
-                theta = 0 + ending_theta * (percentage - 50) / 50;
+                if (percentage <= 50) {
+                    theta = 270 + (90 - (starting_theta - 270)) * percentage / 50;
+                } else if (percentage > 50) {
+                    theta = 0 + ending_theta * (percentage - 50) / 50;
+                }
+
+                int X_line = 0;
+                int Y_line = 0;
+
+                X_line = (int) (length * (Math.sin(Math.toRadians(theta))));
+                Y_line = (int) (length * (Math.cos(Math.toRadians(theta))));
+
+                float X_end_point = X_line + X_origin;
+                float Y_end_point = -Y_line + Y_origin;
+
+                canvas.drawLine(X_origin, Y_origin, X_end_point, Y_end_point, Gauge_Paint);
             }
 
-            int X_line = 0;
-            int Y_line = 0;
 
-            X_line = (int) (length * (Math.sin(Math.toRadians(theta))));
-            Y_line = (int) (length * (Math.cos(Math.toRadians(theta))));
+            if (FLAG_run_set == true) {
 
-            float X_end_point = X_line + X_origin;
-            float Y_end_point = -Y_line + Y_origin;
+                double theta_Adjust = 0;
+                double starting_theta_Adjust = 270;
+                double ending_theta_Adjust = 90;
 
-            canvas.drawLine(X_origin, Y_origin, X_end_point, Y_end_point, Gauge_Paint);
+                if (percentage_Adjust <= 50) {
+                    theta_Adjust = 270 + (90 - (starting_theta_Adjust - 270)) * percentage_Adjust / 50;
+                } else if (percentage_Adjust > 50) {
+                    theta_Adjust = 0 + ending_theta_Adjust * (percentage_Adjust - 50) / 50;
+                }
+
+                int X_line_Adjust = 0;
+                int Y_line_Adjust = 0;
+
+                X_line_Adjust = (int) (length * (Math.sin(Math.toRadians(theta_Adjust))));
+                Y_line_Adjust = (int) (length * (Math.cos(Math.toRadians(theta_Adjust))));
+
+                float X_end_point_Adjust = X_line_Adjust + X_origin;
+                float Y_end_point_Adjust = -Y_line_Adjust + Y_origin;
+
+                canvas.drawLine(X_origin, Y_origin, X_end_point_Adjust, Y_end_point_Adjust, Adjust_RPM_Paint);
+
+            }
+
+            mView_Drawable.invalidate();
         }
-
-
-        if(FLAG_run_set == true){
-
-            double theta_Adjust=0;
-            double starting_theta_Adjust = 270;
-            double ending_theta_Adjust = 90;
-
-            if(percentage_Adjust <= 50){
-                theta_Adjust = 270 + (90- (starting_theta_Adjust - 270))*percentage_Adjust/50;
-            }
-            else if(percentage_Adjust > 50){
-                theta_Adjust = 0 + ending_theta_Adjust*(percentage_Adjust-50)/50;
-            }
-
-            int X_line_Adjust = 0;
-            int Y_line_Adjust = 0;
-
-            X_line_Adjust = (int) (length*(Math.sin(Math.toRadians(theta_Adjust))));
-            Y_line_Adjust = (int) (length*(Math.cos(Math.toRadians(theta_Adjust))));
-
-            float X_end_point_Adjust = X_line_Adjust + X_origin;
-            float Y_end_point_Adjust = -Y_line_Adjust + Y_origin;
-
-            canvas.drawLine(X_origin,Y_origin,X_end_point_Adjust,Y_end_point_Adjust,Adjust_RPM_Paint);
-
-        }
-
-        mView_Drawable.invalidate();
-
+        catch(Exception e){}
     }
 
 
     private Runnable runnable_for_slow = new Runnable() {
         @Override
         public void run() {
-
 
             if(Global_Variable.Voltage > 40){
                 Battery_IMAGE.setImageResource(drawable.battery_04);
@@ -552,13 +598,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if(fake_current >= 56 && fake_current < 58){
             Current_IMAGE.setImageResource(drawable.current_29);
         }
-        else if(fake_current >= 58 && fake_current <= 60){
+        else if(fake_current >= 58){
             Current_IMAGE.setImageResource(drawable.current_30);
         }
     }
-
-
-
 
     BlueTooth_Lib bt;
     boolean auto_send_request = false;
@@ -569,7 +612,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //bluetooth automatic sending command for getting battery status
             bt.driver_send_all();
-            handler.postDelayed(this, 150);
+            if( Global_Variable.FLAG_first_start_time == true) {
+                txt_write.write_one_set_data(System.currentTimeMillis() - Global_Variable.starting_time, Global_Variable.Current, Global_Variable.Voltage, Global_Variable.Real_RPM, Global_Variable.Target_Speed);
+            }
+            handler.postDelayed(this, 200);
         }
     };
 
@@ -679,7 +725,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 mDebugText.setText("Max Current:"+Global_Variable.Target_Ampere/1000+"A");
-                handler_draw.postDelayed(this,200);
+                handler_draw.postDelayed(this,350);
 
             }
 

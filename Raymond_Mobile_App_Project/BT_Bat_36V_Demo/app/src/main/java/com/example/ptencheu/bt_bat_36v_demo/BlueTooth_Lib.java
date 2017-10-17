@@ -119,6 +119,7 @@ public class BlueTooth_Lib {
 
     public void driver_send_all() {
         if (mConnectedThread != null) {
+
             if(sequential_send == 2){
                 sequential_send = 0;
             }
@@ -453,89 +454,127 @@ public class BlueTooth_Lib {
                         delay_counter++;
                        //mmInStream.read();
                     }
-                    if(bytes != 0 && delay_counter > 100000){//there is some incoming data
-                        buffer = new byte[35000];
-                        bytes = mmInStream.read(buffer, 0, mmInStream.available());//the actual byte that we get in total
-                        analyst_data(buffer,bytes);
-                        //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget(); // Send the obtained bytes to the UI activity
+                    if(bytes != 0 && delay_counter > 100000 && bytes < 30000){//there is some incoming data
+                        try {
+                            buffer = new byte[bytes+10000];
+                            bytes = mmInStream.read(buffer, 0, mmInStream.available());//the actual byte that we get in total
+                            analyst_data(buffer, bytes);
+                        }
+                        catch(Exception e){
+                            Log.e("run",e.toString());
+                        }//mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget(); // Send the obtained bytes to the UI activity
                     }
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e("run",e.toString());
                     break;
                 }
             }
         }
 
         byte []pending_data = new byte[50000];
-        public byte []pending_msg = new byte [3000];
+        public byte []pending_msg = new byte [300];
         int pending_data_count = 0;
 
         private void analyst_data(byte []input, int length){
 
-            if(pending_data_count > 40000 || length > 30000 || (50000-pending_data_count)<length){
+            if(pending_data_count > 10000 || length > 7000 || (10000-pending_data_count)<length){
                 pending_data_count = 0;
-                for(int j = 0; j< 50000; j++){
+                for(int j = 0; j< 10000; j++){
                     pending_data[j] = 0;
                 }
+                Log.e("ClearAll0","length too long");
             }
+            else {
 
-            //copying data for analyst
-            for(int i = 0; i < length; i++){
-                pending_data[pending_data_count] = input[i];
-                pending_data_count++;
-            }
-
-            //start analyst
-            int position_start = 50000;
-            int position_end = -50000;
-
-            //this is for the driver
-            for(int j = 0; j < pending_data_count -1; j++){//check head
-                if(pending_data[j] == (byte)0x55 && position_start == 50000){
-                    position_start = j;
-                }
-            }
-
-            for(int k = position_start; k < pending_data_count -1; k++){//check tail
-                if(pending_data[k] == (byte)0xaa && position_end == -50000){
-                    position_end = k;
-                }
-            }
-
-            if(position_end > position_start) {
-
-                int pending_msg_count = 0;
-
-                pending_msg = new byte[position_end - position_start  + 1 ];
-
-                //outlining the msg correctly
-                for (int k = position_start; k < position_end+1; k++) {//putting the correct respond to a msg
-                    pending_msg[pending_msg_count] = pending_data[k];
-                    pending_msg_count++;
+                //copying data for analyst
+                for (int i = 0; i < length; i++) {
+                    pending_data[pending_data_count] = input[i];
+                    pending_data_count++;
                 }
 
-                //do the data get stuff
-                check_what_is_it_for_driver(pending_msg);
+                //start analyst
+                int position_start = 50000;
+                int position_end = -50000;
 
-                pending_data_count = 0;
-                for(int w = 0; w< 50000; w++){
-                    pending_data[w] = 0;
+                //this is for the driver
+                boolean FLAG_find_start = false;
+                for (int j = 0; j < pending_data_count - 1; j++) {//check head
+                    if (pending_data[j] == (byte) 0x55 && position_start == 50000) {
+                        position_start = j;
+                        FLAG_find_start = true;
+                    }
+                    if(FLAG_find_start == true){
+                        if(pending_data[position_start+4] == (byte)0xaa){
+                            //return;
+                        }
+                        else{
+                            position_start = 50000;
+                            FLAG_find_start = false;
+                        }
+                    }
                 }
+
+
+//                for (int k = position_start; k < pending_data_count - 1; k++) {//check tail
+//                    if (pending_data[k] == (byte) 0xaa && position_end == -50000) {
+//                        position_end = k;
+//                    }
+//                }
+                if(position_start < 10000) {
+
+                    try {
+                        if (pending_data[position_start + 4] == (byte) 0xaa) {
+
+                            int pending_msg_count = 0;
+
+                            pending_msg = new byte[5];
+
+                            //outlining the msg correctly
+                            for (int k = position_start; k < position_start + 4; k++) {//putting the correct respond to a msg
+                                pending_msg[pending_msg_count] = pending_data[k];
+                                pending_msg_count++;
+                            }
+
+                            //do the data get stuff
+                            if (pending_msg.length == 5) {
+                                check_what_is_it_for_driver(pending_msg);
+                            }
+
+                            pending_data_count = 0;
+                            for (int w = 0; w < 10000; w++) {
+                                pending_data[w] = 0;
+                            }
 
 //                //clear the data stored and adjust the position
 //                for(int w = 0 ; w < position_end; w++){
 //                    pending_data[w] = pending_data[w+position_end+1];
 //                }
 //                pending_data_count = pending_data_count - position_end - 1 ;
-            }
+                        }
+                        else {
+                            Log.e("Not in right 55aa","set to 0");
+                            pending_data[position_start] = 0;
+                        }
 
+                    }
+                    catch (Exception e) {
+                        Log.e("analystData", e.toString());
+                    }
+                }
 
+                else{//too much data clear all
 
+                    if(pending_data_count>1000) {
+                        Log.e("Clear allll","impossible");
+                        pending_data_count = 0;
+                        for (int w = 0; w < 10000; w++) {
+                            pending_data[w] = 0;
+                        }
+                    }
 
-
-
-            //this is for battery
+                }
+                //this is for battery
 //            for(int j = 0; j < pending_data_count -1; j++){//check head
 //                if(pending_data[j] == (byte)0xaa && position_start == 100){
 //                    position_start = j;
@@ -571,7 +610,7 @@ public class BlueTooth_Lib {
 //                }
 //                pending_data_count = pending_data_count - position_end - 1 ;
 //            }
-
+            }
         }
 
 
@@ -613,6 +652,9 @@ public class BlueTooth_Lib {
                     if(Global_Variable.Target_Ampere > 60000){
                         Global_Variable.Target_Ampere = 60000;
                     }
+                    else if(Global_Variable.Target_Ampere < 0){
+                        Global_Variable.Target_Ampere =0;
+                    }
                     Ready_to_send[1] = 0x01;
                     Ready_to_send[2] = (byte) (Global_Variable.Target_Ampere >> 8);
                     Ready_to_send[3] = (byte) (Global_Variable.Target_Ampere);
@@ -633,6 +675,7 @@ public class BlueTooth_Lib {
                 }
             }
 
+
             mConnectedThread.write_byte(Ready_to_send);
 
         }
@@ -647,7 +690,7 @@ public class BlueTooth_Lib {
             switch (pending_Msg[1]){
 
                 case 0x03:{//current
-                    Global_Variable.Current = (((pending_Msg[3]&0xff) | ((pending_Msg[2]&0xff)<<8))&0xffff)/1000;
+                    Global_Variable.Current = (float)(((pending_Msg[3]&0xff) | ((pending_Msg[2]&0xff)<<8))&0xffff)/1000;
 
                     if(record_first_time == false){last_record_current_time = System.currentTimeMillis();record_first_time = true;}
                     else if(Global_Variable.Current > 0 && (System.currentTimeMillis()-last_record_current_time)>0 && Global_Variable.Voltage > 0){
@@ -692,7 +735,7 @@ public class BlueTooth_Lib {
                     else if(Global_Variable.Current>=50 && Global_Variable.Current < 55){
                         Global_Variable.counter_50_55++;
                     }
-                    else if(Global_Variable.Current>=55 && Global_Variable.Current <= 60){
+                    else if(Global_Variable.Current>=55){
                         Global_Variable.counter_55_60++;
                     }
                     else{}
@@ -720,7 +763,7 @@ public class BlueTooth_Lib {
                             Global_Variable.set41_50_counter++;
                             Global_Variable.Target_Speed = Global_Variable.target_speed_41_50;
                         }
-                        else if(Global_Variable.Current >= 50 && Global_Variable.Current <60){
+                        else if(Global_Variable.Current >= 50){
                             Global_Variable.set51_60_counter++;
                             Global_Variable.Target_Speed = Global_Variable.target_speed_51_60;
                         }
@@ -729,7 +772,8 @@ public class BlueTooth_Lib {
                 }
                 case 0x04:{//voltage
 
-                    Global_Variable.Voltage = (((pending_Msg[3]&0xff) | ((pending_Msg[2]&0xff)<<8))&0xffff)/1000;
+                    Global_Variable.Voltage = (float)(((pending_Msg[3]&0xff) | ((pending_Msg[2]&0xff)<<8))&0xffff)/1000;
+
 
                     break;
                 }
@@ -737,6 +781,9 @@ public class BlueTooth_Lib {
                     Global_Variable.Real_RPM = (((pending_Msg[3]&0xff) | ((pending_Msg[2]&0xff)<<8))&0xffff);
                     if(Global_Variable.Real_RPM > Global_Variable.Max_RPM){
                         Global_Variable.Real_RPM = Global_Variable.Max_RPM;
+                    }
+                    else if (Global_Variable.Real_RPM < 0){
+                        Global_Variable.Real_RPM = 0;
                     }
 
                     break;

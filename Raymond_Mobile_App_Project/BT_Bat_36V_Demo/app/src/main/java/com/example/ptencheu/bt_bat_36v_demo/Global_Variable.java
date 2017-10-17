@@ -30,18 +30,18 @@ public class Global_Variable
     public static int target_speed_51_60 = 2800;
 
 
-    public static long counter_0_5 = 10000;
-    public static long counter_5_10 = 10000;
-    public static long counter_10_15 = 10000;
-    public static long counter_15_20 = 10000;
-    public static long counter_20_25 = 10000;
-    public static long counter_25_30 = 10000;
-    public static long counter_30_35 = 10000;
-    public static long counter_35_40 = 10000;
-    public static long counter_40_45 = 10000;
-    public static long counter_45_50 = 10000;
-    public static long counter_50_55 = 10000;
-    public static long counter_55_60 = 10000;
+    public static long counter_0_5 = 0;
+    public static long counter_5_10 = 0;
+    public static long counter_10_15 = 0;
+    public static long counter_15_20 = 0;
+    public static long counter_20_25 = 0;
+    public static long counter_25_30 = 0;
+    public static long counter_30_35 = 0;
+    public static long counter_35_40 = 0;
+    public static long counter_40_45 = 0;
+    public static long counter_45_50 = 0;
+    public static long counter_50_55 = 0;
+    public static long counter_55_60 = 0;
 
 
     public static int Target_Speed = 2000;
@@ -50,8 +50,8 @@ public class Global_Variable
 
 
 
-    public static float Ampere_Hour = 0.7f;
-    public static long cutting_time = 120000;//in millisecond
+    public static float Ampere_Hour = 0.0f;
+    public static long cutting_time = 0;//in millisecond
 
     public static long starting_time = 0;
     public static boolean FLAG_first_start_time = false;

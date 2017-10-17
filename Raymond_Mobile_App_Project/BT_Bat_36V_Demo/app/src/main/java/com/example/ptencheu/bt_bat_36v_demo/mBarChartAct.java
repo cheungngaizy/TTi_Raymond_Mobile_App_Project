@@ -46,8 +46,6 @@ public class mBarChartAct extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_m_bar_chart);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-
-
         text_percentage = (TextView)findViewById(R.id.textView_Percentage);
         text_target_speed = (TextView)findViewById(R.id.textView_TargetSpeed);
 
@@ -65,9 +63,9 @@ public class mBarChartAct extends AppCompatActivity implements View.OnClickListe
         text_Cutting_Time.setTextSize(30);
         text_Cutting_Time.setTextColor(Color.WHITE);
 
-        //if(Global_Variable.FLAG_first_start_time == true) {
+        if(Global_Variable.FLAG_first_start_time == true) {
             text_Cutting_Time.setText("Run Time:" + Global_Variable.cutting_time / 60000 + " Mins");
-        //}
+        }
 
         Analyst = new mBarChart(findViewById(R.id.BarChart));
 
