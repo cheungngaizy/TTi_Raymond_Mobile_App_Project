@@ -6,6 +6,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 
 /**
  * Created by PTENCHEU on 10/9/2017.
@@ -223,14 +224,22 @@ public class Raw_Data_Write {
     private void writeOneString(String data) {
         try {
             //device basic path(phone memory)
-            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+            //File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+
+            File path = new File((Environment.getExternalStorageDirectory())+"/TTi_Mower_Test_Result");
+
+
+            if(path.exists() == false){
+                path.mkdir();
+            }
 
             int number = 0;
             String fileName;
 
+            String mydate = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 
             while(FLAG_selected_correct_file_name == false) {
-                fileName = "Mower_Test" + number + ".txt";
+                fileName = "Mower_Test"+ "_"+mydate +"_"+ number + ".txt";
                 phoneMemoryTextMainDirectory = new File(path, fileName);
                 if (phoneMemoryTextMainDirectory.exists() == true) {
                     number++;
@@ -258,11 +267,17 @@ public class Raw_Data_Write {
     private void writeException(Exception e) {
         try {
             //device basic path(phone memory)
-            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+            //File path = new File((Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM))+"/TTi_Mower_Test_Result");
+            File path = new File((Environment.getExternalStorageDirectory())+"/TTi_Mower_Test_Result");
+
+
+            if(path.exists() == false){
+                path.mkdir();
+            }
+
 
             int number = 0;
             String fileName;
-
 
             while(FLAG_selected_correct_file_name == false) {
                 fileName = "Mower_Test" + number + ".txt";

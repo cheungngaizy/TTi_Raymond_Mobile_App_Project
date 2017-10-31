@@ -615,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if( Global_Variable.FLAG_first_start_time == true) {
                 txt_write.write_one_set_data(System.currentTimeMillis() - Global_Variable.starting_time, Global_Variable.Current, Global_Variable.Voltage, Global_Variable.Real_RPM, Global_Variable.Target_Speed);
             }
-            handler.postDelayed(this, 200);
+            handler.postDelayed(this, 100);
         }
     };
 
@@ -725,7 +725,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 mDebugText.setText("Max Current:"+Global_Variable.Target_Ampere/1000+"A");
-                handler_draw.postDelayed(this,350);
+                handler_draw.postDelayed(this,250);
 
             }
 
