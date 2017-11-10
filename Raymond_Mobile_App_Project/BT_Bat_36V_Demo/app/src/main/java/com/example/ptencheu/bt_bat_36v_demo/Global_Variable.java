@@ -56,5 +56,7 @@ public class Global_Variable
     public static long starting_time = 0;
     public static boolean FLAG_first_start_time = false;
 
+    public static String bt_name;
+
 
 }

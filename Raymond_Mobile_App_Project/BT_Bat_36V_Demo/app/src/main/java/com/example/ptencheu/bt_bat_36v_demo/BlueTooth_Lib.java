@@ -405,6 +405,7 @@ public class BlueTooth_Lib {
     private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
         try {
             final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", UUID.class);
+            Global_Variable.bt_name = device.getName();
             return (BluetoothSocket) m.invoke(device, BTMODULEUUID);
         } catch (Exception e) {
             Log.e(TAG, "Could not create Insecure RFComm Connection",e);

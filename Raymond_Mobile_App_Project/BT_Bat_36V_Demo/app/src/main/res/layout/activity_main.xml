@@ -56,11 +56,11 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
         android:background="@drawable/set"
         app:layout_constraintBottom_toBottomOf="@+id/button_Result"
-        app:layout_constraintLeft_toLeftOf="@+id/iv" />
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="65dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
         android:id="@+id/button_Result"
@@ -68,33 +68,10 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp"
         android:background="@drawable/button_chart"
         app:layout_constraintBottom_toBottomOf="@+id/iv"
-        app:layout_constraintLeft_toRightOf="@+id/button_PRO" />
-
-    <Button
-        android:id="@+id/button_BT"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginRight="8dp"
-        android:background="@drawable/bluetooth_off"
-        app:layout_constraintBottom_toBottomOf="@+id/button_Result"
+        android:layout_marginRight="65dp"
         app:layout_constraintRight_toRightOf="parent" />
-
-    <Button
-        android:id="@+id/button_Real_PRO"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginRight="11dp"
-        android:background="@drawable/button_pro"
-        app:layout_constraintBottom_toBottomOf="@+id/button_Result"
-        app:layout_constraintRight_toLeftOf="@+id/button_BT" />
 
     <ImageView
         android:id="@+id/Current_Image"
@@ -378,11 +355,11 @@
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="0dp"
         android:layout_marginRight="8dp"
         android:background="@drawable/power"
-        app:layout_constraintBottom_toBottomOf="@+id/button_Real_PRO"
-        app:layout_constraintRight_toRightOf="@+id/textView_RPM" />
+        app:layout_constraintRight_toRightOf="@+id/textView_RPM"
+        app:layout_constraintBottom_toBottomOf="@+id/button_eco"
+        android:layout_marginBottom="0dp" />
 
     <Button
         android:id="@+id/button_eco"

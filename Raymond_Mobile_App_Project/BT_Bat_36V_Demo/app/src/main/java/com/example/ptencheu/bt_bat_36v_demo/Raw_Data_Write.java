@@ -14,6 +14,8 @@ import java.util.Calendar;
 
 public class Raw_Data_Write {
 
+    boolean first_time_to_write = true;
+
     public int total_data_type = 0;
 
     //class for better code structure data
@@ -31,6 +33,16 @@ public class Raw_Data_Write {
         }
     }
 
+
+    public void write_full_title(){
+        if(first_time_to_write == true){
+            write_title();
+            write_Unit();
+            first_time_to_write = false;
+        }
+    }
+
+
     public Data_type time;
     public Data_type real_current;
     public Data_type real_voltage;
@@ -45,8 +57,7 @@ public class Raw_Data_Write {
         real_RPM = new Data_type("Real_RPM","(RPM)","null");//3
         target_RPM = new Data_type("target_RPM","(RPM)","null");//4
 
-        write_title();
-        write_Unit();
+
         //write_one_set_data(1,1,1,1,1);
     }
 
@@ -226,7 +237,9 @@ public class Raw_Data_Write {
             //device basic path(phone memory)
             //File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
 
-            File path = new File((Environment.getExternalStorageDirectory())+"/TTi_Mower_Test_Result");
+
+
+            File path = new File((Environment.getExternalStorageDirectory())+"/TTi_Mower_Test_Result"+Global_Variable.bt_name);
 
 
             if(path.exists() == false){
@@ -268,7 +281,7 @@ public class Raw_Data_Write {
         try {
             //device basic path(phone memory)
             //File path = new File((Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM))+"/TTi_Mower_Test_Result");
-            File path = new File((Environment.getExternalStorageDirectory())+"/TTi_Mower_Test_Result");
+            File path = new File((Environment.getExternalStorageDirectory())+"/TTi_Mower_Test_Result"+Global_Variable.bt_name);
 
 
             if(path.exists() == false){

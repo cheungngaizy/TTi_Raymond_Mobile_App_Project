@@ -122,9 +122,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mIntentRealPRO = new Intent(MainActivity.this,mLineChartAct.class);
 
         //button
-        mButton_BT = (Button) findViewById(id.button_BT);
-        mButton_BT.setOnClickListener(this);
-        mButton_BT.setOnTouchListener(this);
+//        mButton_BT = (Button) findViewById(id.button_BT);
+//        mButton_BT.setOnClickListener(this);
+//        mButton_BT.setOnTouchListener(this);
 
         mButton_PRO = (Button) findViewById(id.button_PRO);
         mButton_PRO.setOnClickListener(this);
@@ -134,8 +134,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mButton_Result.setOnClickListener(this);
         mButton_Result.setOnTouchListener(this);
 
-        mButton_Real_Pro = (Button) findViewById(id.button_Real_PRO);
-        mButton_Real_Pro.setOnClickListener(this);
+//        mButton_Real_Pro = (Button) findViewById(id.button_Real_PRO);
+//        mButton_Real_Pro.setOnClickListener(this);
 
         mButton_Mode_Power = (Button) findViewById(id.button_power);
         mButton_Mode_Power.setOnClickListener(this);
@@ -241,12 +241,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //v.startAnimation(buttonClick);
         switch (v.getId()) {
 
-            case id.button_BT: {
-                //boolean wtf = bt.get_connection_status();
-                //
-                // Toast.makeText(this,"hi:" + wtf,Toast.LENGTH_SHORT);
-                break;
-            }
+//            case id.button_BT: {
+//                //boolean wtf = bt.get_connection_status();
+//                //
+//                // Toast.makeText(this,"hi:" + wtf,Toast.LENGTH_SHORT);
+//                break;
+//            }
 
             case id.button_PRO: {
                 mIntentPRO.putExtra("F", 10);
@@ -306,10 +306,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
 
-            case id.button_Real_PRO:{
-                startActivity(mIntentRealPRO);
-                break;
-            }
+//            case id.button_Real_PRO:{
+//                startActivity(mIntentRealPRO);
+//                break;
+//            }
         }
 
 
@@ -613,6 +613,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //bluetooth automatic sending command for getting battery status
             bt.driver_send_all();
             if( Global_Variable.FLAG_first_start_time == true) {
+                txt_write.write_full_title();
                 txt_write.write_one_set_data(System.currentTimeMillis() - Global_Variable.starting_time, Global_Variable.Current, Global_Variable.Voltage, Global_Variable.Real_RPM, Global_Variable.Target_Speed);
             }
             handler.postDelayed(this, 100);
